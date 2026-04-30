@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frame — Property Operations Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --black:#090908;--bg2:#111110;--bg3:#1A1A18;--bg4:#222220;
+  --or:#F97316;--or2:#FB923C;--or-dim:rgba(249,115,22,.1);--or-bd:rgba(249,115,22,.25);
+  --txt:#F0F0EC;--txt2:#9A9A92;--txt3:#52524A;--txt4:#38382F;
+  --bd:rgba(255,255,255,.055);--bd2:rgba(255,255,255,.1);
+  --grn:#4ADE80;--blu:#60A5FA;--pur:#A78BFA;--yel:#FACC15;--red:#F87171;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--txt);font-family:'DM Sans',-apple-system,sans-serif;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.03;pointer-events:none;z-index:1;animation:grain 8s steps(1) infinite}
+@keyframes grain{0%{background-position:0 0}10%{background-position:-5% -10%}20%{background-position:-15% 5%}30%{background-position:7% -25%}40%{background-position:-5% 25%}50%{background-position:-15% 10%}60%{background-position:15% 0}70%{background-position:0 15%}80%{background-position:3% 35%}90%{background-position:-10% 10%}}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 52px;height:60px;display:flex;align-items:center;justify-content:space-between;border-bottom:.5px solid var(--bd);backdrop-filter:blur(20px) saturate(180%);background:rgba(9,9,8,.82)}
+.nlogo{display:flex;align-items:center;gap:9px;text-decoration:none}
+.lm{width:28px;height:28px;background:var(--or);border-radius:6px;display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:5px}
+.lm s{background:#090908;border-radius:1px;display:block;text-decoration:none}
+.lm s:nth-child(2){opacity:.5}.lm s:nth-child(3){opacity:.5}.lm s:nth-child(4){opacity:.2}
+.ln{font-size:15px;font-weight:600;color:var(--txt);letter-spacing:-.02em}
+.nav-links{display:flex;gap:28px}
+.nav-links a{font-size:13px;color:var(--txt3);text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:var(--txt2)}
+.nav-cta{display:flex;gap:8px}
+.bg{padding:7px 15px;border-radius:7px;border:.5px solid var(--bd2);color:var(--txt2);font-size:13px;text-decoration:none;transition:all .15s;background:transparent}
+.bg:hover{border-color:var(--or-bd);color:var(--or)}
+.bor{padding:7px 15px;border-radius:7px;background:var(--or);color:#090908;font-size:13px;font-weight:600;text-decoration:none;transition:all .18s;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+.bor:hover{background:var(--or2);box-shadow:0 0 24px rgba(249,115,22,.35)}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;place-items:center;text-align:center;padding:120px 52px 80px;position:relative;overflow:hidden}
+.horb{position:absolute;top:-5%;left:50%;transform:translateX(-50%);width:1000px;height:550px;background:radial-gradient(ellipse,rgba(249,115,22,.16) 0%,rgba(249,115,22,.03) 45%,transparent 70%);animation:hpulse 7s ease-in-out infinite;pointer-events:none}
+@keyframes hpulse{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.06)}}
+.hgrid{position:absolute;inset:0;background-image:linear-gradient(var(--bd) 1px,transparent 1px),linear-gradient(90deg,var(--bd) 1px,transparent 1px);background-size:68px 68px;mask-image:radial-gradient(78% 55% at 50% 0%,black,transparent);pointer-events:none}
+.hcon{position:relative;z-index:2;max-width:920px;margin:0 auto}
+.ey{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 9px;border:.5px solid var(--or-bd);border-radius:20px;background:var(--or-dim);font-size:11px;font-weight:500;color:var(--or);margin-bottom:32px;letter-spacing:.06em;text-transform:uppercase}
+.ep{width:6px;height:6px;border-radius:50%;background:var(--or);animation:eppulse 1.8s ease-in-out infinite}
+@keyframes eppulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.55);opacity:.35}}
+h1{font-size:82px;font-weight:200;line-height:1.03;letter-spacing:-.04em;margin-bottom:22px}
+h1 b{font-weight:500;color:var(--or)}
+.hsub{font-size:18px;color:var(--txt2);max-width:510px;margin:0 auto 44px;font-weight:300;line-height:1.7}
+.hbtns{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:52px}
+.bpri{padding:14px 30px;border-radius:10px;background:var(--or);color:#090908;font-size:15px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.bpri:hover{background:var(--or2);transform:translateY(-2px);box-shadow:0 18px 52px rgba(249,115,22,.3)}
+.bsec{padding:14px 30px;border-radius:10px;background:transparent;color:var(--txt2);font-size:15px;font-weight:300;text-decoration:none;display:inline-flex;align-items:center;gap:9px;border:.5px solid var(--bd2);cursor:pointer;transition:all .2s}
+.bsec:hover{border-color:var(--or-bd);color:var(--or)}
+.trust{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--txt3)}
+.ts{opacity:.3}
+
+/* APP WINDOW */
+.awrap{padding:0 52px 110px;position:relative;z-index:2}
+.awin{max-width:1140px;margin:0 auto;border-radius:14px;overflow:hidden;border:.5px solid rgba(249,115,22,.12);box-shadow:0 70px 180px rgba(0,0,0,.75),0 0 0 .5px var(--bd),inset 0 1px 0 rgba(255,255,255,.035);position:relative}
+.awin::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(249,115,22,.5),transparent)}
+.atbar{height:37px;background:var(--bg2);display:flex;align-items:center;padding:0 14px;gap:6px;border-bottom:.5px solid var(--bd)}
+.traf{width:10px;height:10px;border-radius:50%}
+.atbar-txt{flex:1;text-align:center;font-size:10px;color:var(--txt3);font-family:'DM Mono',monospace}
+.ashell{display:grid;grid-template-columns:186px 1fr;height:455px;background:var(--black)}
+.asb{background:var(--bg2);border-right:.5px solid var(--bd);padding:11px 7px;overflow:hidden}
+.asblogo{display:flex;align-items:center;gap:7px;padding:5px 6px 12px;border-bottom:.5px solid var(--bd);margin-bottom:9px}
+.asbls{width:20px;height:20px;background:var(--or);border-radius:4px}
+.asblname{font-size:11px;font-weight:600;color:var(--txt)}
+.anlbl{font-size:8px;color:var(--txt3);text-transform:uppercase;letter-spacing:.12em;padding:7px 6px 2px;font-weight:600}
+.ani{padding:5px 6px;border-radius:5px;font-size:11px;color:var(--txt2);display:flex;align-items:center;gap:5px;margin-bottom:1px}
+.ani.on{background:var(--or-dim);color:var(--or);font-weight:500}
+.anidot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.amain{padding:16px 18px;overflow:hidden}
+.apgtitle{font-size:17px;font-weight:500;color:var(--txt);margin-bottom:12px}
+.afilts{display:flex;gap:4px;margin-bottom:11px;flex-wrap:wrap}
+.afp{padding:3px 9px;border-radius:20px;font-size:9px;border:.5px solid var(--bd2);color:var(--txt2)}
+.afp.on{background:var(--or-dim);border-color:var(--or-bd);color:var(--or)}
+.atbl{width:100%;border-collapse:collapse;font-size:10px}
+.atbl th{padding:6px 9px;background:var(--bg2);color:var(--txt3);text-align:left;font-weight:600;font-size:8px;text-transform:uppercase;letter-spacing:.06em;border-bottom:.5px solid var(--bd)}
+.atbl td{padding:8px 9px;border-bottom:.5px solid var(--bd);color:var(--txt2);vertical-align:middle}
+.atbl tr:hover td{background:rgba(255,255,255,.015)}
+.att{font-size:10px;font-weight:500;color:var(--txt);margin-bottom:1px}
+.ats{font-size:8px;color:var(--txt3)}
+.ap{display:inline-flex;align-items:center;padding:2px 7px;border-radius:10px;font-size:8px;font-weight:600;white-space:nowrap}
+.ph{background:rgba(248,113,113,.14);color:var(--red)}.pm{background:rgba(249,115,22,.12);color:var(--or)}.pl{background:rgba(74,222,128,.1);color:var(--grn)}.popen{background:rgba(255,255,255,.06);color:var(--txt2)}.pprog{background:rgba(249,115,22,.12);color:var(--or)}.pdone{background:rgba(74,222,128,.1);color:var(--grn)}.phold{background:rgba(250,204,21,.1);color:var(--yel)}.pmaint{background:rgba(96,165,250,.12);color:var(--blu)}.phouse{background:rgba(167,139,250,.12);color:var(--pur)}
+
+/* MARQUEE */
+.mwrap{padding:48px 0;border-top:.5px solid var(--bd);border-bottom:.5px solid var(--bd);overflow:hidden;position:relative}
+.mwrap::before,.mwrap::after{content:'';position:absolute;top:0;bottom:0;width:130px;z-index:2}
+.mwrap::before{left:0;background:linear-gradient(90deg,var(--black),transparent)}
+.mwrap::after{right:0;background:linear-gradient(-90deg,var(--black),transparent)}
+.mtrack{display:flex;animation:marq 28s linear infinite;width:max-content}
+.mitem{padding:0 44px;font-size:13px;color:var(--txt3);display:flex;align-items:center;gap:14px;white-space:nowrap}
+.mitem b{color:var(--txt2);font-weight:500}
+.mdot{width:4px;height:4px;border-radius:50%;background:var(--or);opacity:.45}
+@keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* FEATURES */
+.fsec{padding:120px 52px}
+.fhdr{text-align:center;margin-bottom:88px}
+.seye{font-size:10px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;display:block}
+.stitle{font-size:56px;font-weight:200;letter-spacing:-.03em;line-height:1.06;margin-bottom:14px}
+.stitle b{font-weight:500;color:var(--or)}
+.ssub{font-size:16px;color:var(--txt2);font-weight:300;line-height:1.65;max-width:460px;margin:0 auto}
+.fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:.5px solid var(--bd);border-radius:20px;overflow:hidden}
+.fcard{background:var(--bg2);position:relative;overflow:hidden;cursor:none;display:flex;flex-direction:column;transition:background .25s}
+.fcard:hover{background:var(--bg3)}
+.fcard::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(249,115,22,.06),transparent 60%);opacity:0;transition:opacity .4s;pointer-events:none}
+.fcard:hover::after{opacity:1}
+.fcmeta{padding:32px 28px 22px;flex-shrink:0;position:relative;z-index:2}
+.fcion{width:42px;height:42px;border-radius:10px;background:var(--bg4);border:.5px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:18px;transition:all .3s}
+.fcard:hover .fcion{background:var(--or-dim);border-color:var(--or-bd);transform:scale(1.06) rotate(-2deg)}
+.fctitle{font-size:16px;font-weight:500;color:var(--txt);margin-bottom:8px;letter-spacing:-.01em}
+.fcdesc{font-size:13px;color:var(--txt2);line-height:1.65}
+.fcprev{height:220px;border-top:.5px solid var(--bd);position:relative;overflow:hidden;background:var(--black)}
+.fcprev-inner{position:absolute;inset:12px;opacity:0;transform:translateY(14px) scale(.98);transition:opacity .45s cubic-bezier(.4,0,.2,1),transform .45s cubic-bezier(.4,0,.2,1)}
+.fcard:hover .fcprev-inner{opacity:1;transform:translateY(0) scale(1)}
+.fcprev-glow{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(249,115,22,.06),transparent);pointer-events:none}
+
+/* HOW */
+.how{padding:120px 52px;position:relative;overflow:hidden}
+.how::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 40% at 50% 50%,rgba(249,115,22,.07),transparent);pointer-events:none}
+.hsteps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:.5px solid var(--bd);border-radius:16px;overflow:hidden;margin-top:60px}
+.hstep{background:var(--bg2);padding:40px 32px;position:relative;overflow:hidden;transition:background .25s}
+.hstep:hover{background:var(--bg3)}
+.hnum{font-size:72px;font-weight:200;color:var(--or);opacity:.12;line-height:1;margin-bottom:22px;font-family:'DM Mono',monospace;letter-spacing:-.04em;transition:opacity .3s}
+.hstep:hover .hnum{opacity:.28}
+.htitle{font-size:17px;font-weight:500;color:var(--txt);margin-bottom:10px;letter-spacing:-.01em}
+.hdesc{font-size:14px;color:var(--txt2);line-height:1.65}
+
+/* PRICING */
+.psec{padding:120px 52px;text-align:center}
+.pinner{max-width:860px;margin:0 auto}
+.pcards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:60px;text-align:left}
+.pcard{background:var(--bg2);border:.5px solid var(--bd2);border-radius:18px;padding:40px;position:relative;overflow:hidden;transition:transform .25s,border-color .25s}
+.pcard:hover{transform:translateY(-3px)}
+.pcard.hot{border-color:var(--or-bd)}
+.pcard.hot::after{content:'';position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,var(--or),transparent)}
+.ptag{display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border-radius:20px;font-size:10px;font-weight:600;margin-bottom:22px;letter-spacing:.04em;text-transform:uppercase}
+.tpro{background:var(--or-dim);color:var(--or);border:.5px solid var(--or-bd)}
+.tent{background:rgba(96,165,250,.08);color:var(--blu);border:.5px solid rgba(96,165,250,.2)}
+.pname{font-size:20px;font-weight:500;letter-spacing:-.01em;margin-bottom:6px}
+.pprice{font-size:58px;font-weight:200;letter-spacing:-.04em;line-height:1;margin-bottom:4px}
+.pprice sup{font-size:22px;vertical-align:top;margin-top:14px;font-weight:400;color:var(--txt2)}
+.pprice span{font-size:15px;color:var(--txt3);font-weight:300}
+.pper{font-size:12px;color:var(--txt3);margin-bottom:30px}
+.plist{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
+.plist li{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--txt2);line-height:1.4}
+.pck{width:18px;height:18px;border-radius:50%;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:9px}
+.pckor{background:var(--or-dim);color:var(--or)}
+.pckbl{background:rgba(96,165,250,.1);color:var(--blu)}
+.pbtn{display:block;width:100%;padding:13px;border-radius:10px;font-size:14px;font-weight:600;text-align:center;text-decoration:none;transition:all .2s;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;letter-spacing:.01em}
+.pbtor{background:var(--or);color:#090908}
+.pbtor:hover{background:var(--or2);box-shadow:0 8px 32px rgba(249,115,22,.3);transform:translateY(-1px)}
+.pbtgh{background:transparent;border:.5px solid var(--bd2);color:var(--txt2)}
+.pbtgh:hover{border-color:rgba(96,165,250,.4);color:var(--blu)}
+
+/* CTA */
+.ctasec{padding:120px 52px;text-align:center;position:relative;overflow:hidden}
+.ctasec::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 45% at 50% 50%,rgba(249,115,22,.09),transparent)}
+.ctasec h2{font-size:64px;font-weight:200;letter-spacing:-.04em;line-height:1.05;margin-bottom:18px}
+.ctasec h2 b{font-weight:500;color:var(--or)}
+.ctasec p{font-size:17px;color:var(--txt2);max-width:400px;margin:0 auto 40px;font-weight:300;line-height:1.65}
+
+/* FOOTER */
+footer{padding:34px 52px;border-top:.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.fcopy{font-size:12px;color:var(--txt3)}
+.flinks{display:flex;gap:24px}
+.flinks a{font-size:12px;color:var(--txt3);text-decoration:none;transition:color .15s}
+.flinks a:hover{color:var(--txt2)}
+
+/* MODAL */
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px)}
+.mbg.open{display:flex}
+.mbox{background:var(--bg2);border:.5px solid var(--bd2);border-radius:18px;padding:44px;width:460px;max-width:92vw;position:relative}
+.mbox::before{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,var(--or-bd),transparent)}
+.mcls{position:absolute;top:16px;right:16px;background:var(--bg3);border:none;color:var(--txt3);font-size:15px;cursor:pointer;width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.mcls:hover{color:var(--txt);background:var(--bg4)}
+.mtitle{font-size:22px;font-weight:500;letter-spacing:-.01em;margin-bottom:6px}
+.msub{font-size:14px;color:var(--txt2);margin-bottom:28px;line-height:1.55}
+.flbl{font-size:10px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;display:block}
+.finp{width:100%;background:var(--bg3);border:.5px solid var(--bd2);border-radius:8px;padding:10px 13px;font-size:14px;color:var(--txt);outline:none;font-family:'DM Sans',sans-serif;transition:border-color .15s;margin-bottom:14px}
+.finp:focus{border-color:var(--or-bd)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.frow .finp{margin-bottom:0}
+
+/* REVEAL */
+.rev{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1)}
+.rev.in{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  body{cursor:auto}
+  nav{padding:0 20px}
+  .nav-links{display:none}
+  .nav-cta .bg{display:none}
+  .ham{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:6px;border:none;background:transparent}
+  .ham span{width:22px;height:1.5px;background:var(--txt2);border-radius:2px;transition:all .25s;display:block}
+  .ham.open span:nth-child(1){transform:rotate(45deg) translate(4.5px,4.5px)}
+  .ham.open span:nth-child(2){opacity:0;transform:translateX(-8px)}
+  .ham.open span:nth-child(3){transform:rotate(-45deg) translate(4.5px,-4.5px)}
+  .mob-menu{position:fixed;top:60px;left:0;right:0;background:var(--bg2);border-bottom:.5px solid var(--bd2);z-index:99;padding:16px 20px;display:flex;flex-direction:column;gap:4px;transform:translateY(-110%);transition:transform .3s cubic-bezier(.4,0,.2,1);backdrop-filter:blur(20px)}
+  .mob-menu.open{transform:translateY(0)}
+  .mob-menu a{font-size:15px;color:var(--txt2);text-decoration:none;padding:11px 0;border-bottom:.5px solid var(--bd);display:block}
+  .mob-menu a:last-child{border-bottom:none}
+  .mob-menu .bor{margin-top:8px;display:block;text-align:center;padding:12px;border-radius:9px;font-size:15px}
+  .hero{padding:100px 22px 60px;min-height:auto}
+  h1{font-size:42px;letter-spacing:-.03em;margin-bottom:18px}
+  .hsub{font-size:16px;margin-bottom:36px}
+  .hbtns{flex-direction:column;gap:10px;margin-bottom:36px}
+  .bpri,.bsec{width:100%;justify-content:center;padding:14px 20px}
+  .trust{flex-wrap:wrap;justify-content:center;gap:6px}
+  .ts{display:none}
+  .awrap{padding:0 16px 70px}
+  .ashell{grid-template-columns:1fr;height:auto}
+  .asb{display:none}
+  .amain{padding:14px 16px}
+  .apgtitle{font-size:15px}
+  .afilts{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;scrollbar-width:none}
+  .afilts::-webkit-scrollbar{display:none}
+  .atbl thead{display:none}
+  .atbl tr{display:flex;flex-wrap:wrap;gap:5px;padding:10px 0;border-bottom:.5px solid var(--bd)}
+  .atbl td{border-bottom:none;padding:2px 4px}
+  .atbl td:first-child{font-size:9px}
+  .mwrap{padding:32px 0}
+  .fsec{padding:70px 20px}
+  .fhdr{margin-bottom:48px}
+  .stitle{font-size:38px}
+  .ssub{font-size:15px}
+  .fgrid{grid-template-columns:1fr;border-radius:14px}
+  .fcmeta{padding:26px 22px 18px}
+  .fcprev{height:auto;max-height:0;transition:max-height .45s cubic-bezier(.4,0,.2,1),border-top-color .3s;border-top-color:transparent}
+  .fcprev.mob-open{max-height:320px;border-top-color:var(--bd)}
+  .fcprev-inner{position:relative;inset:auto;padding:14px;opacity:0;transform:translateY(10px);transition:opacity .35s .1s,transform .35s .1s}
+  .fcprev.mob-open .fcprev-inner{opacity:1;transform:translateY(0)}
+  .fcard:hover .fcprev-inner{opacity:0;transform:translateY(10px)}
+  .fcprev.mob-open .fcprev-inner{opacity:1 !important;transform:translateY(0) !important}
+  .tap-hint{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--txt3);margin-top:12px}
+  .tap-hint-arrow{font-size:10px;transition:transform .3s}
+  .fcard.mob-expanded .tap-hint-arrow{transform:rotate(180deg)}
+  .how{padding:70px 20px}
+  .hsteps{grid-template-columns:1fr;border-radius:12px}
+  .hstep{padding:28px 24px}
+  .hnum{font-size:52px;margin-bottom:16px}
+  .psec{padding:70px 20px}
+  .stitle{font-size:36px}
+  .pcards{grid-template-columns:1fr}
+  .pcard{padding:30px 24px}
+  .pprice{font-size:48px}
+  .ctasec{padding:70px 20px}
+  .ctasec h2{font-size:40px}
+  .ctasec p{font-size:15px}
+  footer{padding:28px 20px;flex-direction:column;gap:16px;text-align:center}
+  .flinks{justify-content:center}
+  .mbox{padding:28px 22px}
+  .frow{grid-template-columns:1fr}
+}
+@media(min-width:769px){
+  .ham,.mob-menu,.tap-hint{display:none}
+}
+</style>
+</head>
+<body>
+
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nlogo">
+    <div class="lm"><s></s><s></s><s></s><s></s></div>
+    <span class="ln">Frame</span>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+  </div>
+  <div class="nav-cta">
+    <a href="/index.html" class="bg">Sign in</a>
+    <button class="bor" onclick="openM()">Get started</button>
+    <button class="ham" id="ham" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mob-menu" id="mob-menu">
+  <a href="#features" onclick="closeMenu()">Features</a>
+  <a href="#how" onclick="closeMenu()">How it works</a>
+  <a href="#pricing" onclick="closeMenu()">Pricing</a>
+  <button class="bor" onclick="closeMenu();openM()">Get started free</button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="horb"></div>
+  <div class="hgrid"></div>
+  <div class="hcon">
+    <div class="ey rev"><span class="ep"></span>Now in early access</div>
+    <h1 class="rev d1">The property operations<br>platform built for <b>efficiency</b></h1>
+    <p class="hsub rev d2">Work orders, live monitoring, team scheduling, vendor management — unified in one platform built for estate managers and their teams.</p>
+    <div class="hbtns rev d3">
+      <button class="bpri" onclick="openM()">Start free trial <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+      <a href="#features" class="bsec">See how it works</a>
+    </div>
+    <div class="trust rev d4">
+      <span>✓ No credit card required</span><span class="ts">·</span>
+      <span>✓ 14-day free trial</span><span class="ts">·</span>
+      <span>✓ Setup in minutes</span>
+    </div>
+  </div>
+</section>
+
+<!-- APP WINDOW -->
+<div class="awrap rev">
+  <div class="awin">
+    <div class="atbar">
+      <div class="traf" style="background:#F87171"></div>
+      <div class="traf" style="background:#FACC15"></div>
+      <div class="traf" style="background:#4ADE80"></div>
+      <div class="atbar-txt">frame.app — Work orders</div>
+    </div>
+    <div class="ashell">
+      <div class="asb">
+        <div class="asblogo"><div class="asbls"></div><span class="asblname">Frame</span></div>
+        <div class="anlbl">Operations</div>
+        <div class="ani"><div class="anidot" style="background:var(--txt3)"></div>Dashboard</div>
+        <div class="ani on"><div class="anidot" style="background:var(--or)"></div>Work orders</div>
+        <div class="ani"><div class="anidot" style="background:var(--txt3)"></div>Calendar</div>
+        <div class="ani"><div class="anidot" style="background:var(--txt3)"></div>Monitoring</div>
+        <div class="ani"><div class="anidot" style="background:var(--txt3)"></div>Team</div>
+        <div class="ani"><div class="anidot" style="background:var(--txt3)"></div>Chat</div>
+        <div class="anlbl" style="margin-top:8px">System</div>
+        <div class="ani"><div class="anidot" style="background:var(--txt3)"></div>Settings</div>
+      </div>
+      <div class="amain">
+        <div class="apgtitle">Work orders</div>
+        <div class="afilts">
+          <div class="afp on">All&nbsp;<span style="background:rgba(255,255,255,.1);border-radius:8px;padding:1px 5px;font-size:7px">15</span></div>
+          <div class="afp">Open&nbsp;<span style="background:rgba(255,255,255,.07);border-radius:8px;padding:1px 5px;font-size:7px">8</span></div>
+          <div class="afp">In progress&nbsp;<span style="background:rgba(255,255,255,.07);border-radius:8px;padding:1px 5px;font-size:7px">2</span></div>
+          <div class="afp">High priority&nbsp;<span style="background:rgba(255,255,255,.07);border-radius:8px;padding:1px 5px;font-size:7px">4</span></div>
+          <div class="afp">🔧 Maintenance</div>
+          <div class="afp">🧹 Housekeeping</div>
+        </div>
+        <table class="atbl">
+          <thead><tr>
+            <th style="width:34px">#</th><th>Work order</th><th>Location</th><th>Team</th><th>Priority</th><th>Status</th><th>Category</th><th>Created</th>
+          </tr></thead>
+          <tbody>
+            <tr><td style="color:var(--txt3);font-family:'DM Mono',monospace">#1</td><td><div class="att">CU-2 compressor cycling fault&nbsp;<span style="background:rgba(96,165,250,.1);color:var(--blu);font-size:7px;padding:1px 5px;border-radius:8px">📅 2:00 PM</span></div><div class="ats">Mitsubishi VRF · ODU L1.059</div></td><td style="color:var(--txt2)">Lido</td><td><span class="ap pmaint">Maintenance</span></td><td><span class="ap ph">High</span></td><td><span class="ap popen">Open</span></td><td style="color:var(--txt2)">HVAC</td><td style="color:var(--txt3)">Apr 27</td></tr>
+            <tr><td style="color:var(--txt3);font-family:'DM Mono',monospace">#2</td><td><div class="att">CU-1 high-side pressure trips</div><div class="ats">Mitsubishi VRF · ODU L1.051</div></td><td style="color:var(--txt2)">Lido</td><td><span class="ap pmaint">Maintenance</span></td><td><span class="ap ph">High</span></td><td><span class="ap pprog">In progress</span></td><td style="color:var(--txt2)">HVAC</td><td style="color:var(--txt3)">Apr 27</td></tr>
+            <tr><td style="color:var(--txt3);font-family:'DM Mono',monospace">#6</td><td><div class="att">Pool equipment inspection</div><div class="ats">Starwood</div></td><td style="color:var(--txt2)">Starwood</td><td><span class="ap pmaint">Maintenance</span></td><td><span class="ap pl">Low</span></td><td><span class="ap phold">On hold</span></td><td style="color:var(--txt2)">Plumbing</td><td style="color:var(--txt3)">Apr 26</td></tr>
+            <tr><td style="color:var(--txt3);font-family:'DM Mono',monospace">#8</td><td><div class="att">Pre-arrival deep clean — Lido</div><div class="ats">Full property turnover</div></td><td style="color:var(--txt2)">Lido</td><td><span class="ap phouse">Housekeeping</span></td><td><span class="ap ph">High</span></td><td><span class="ap popen">Open</span></td><td style="color:var(--txt2)">Cleaning</td><td style="color:var(--txt3)">Apr 29</td></tr>
+            <tr><td style="color:var(--txt3);font-family:'DM Mono',monospace">#9</td><td><div class="att">Starwood weekly clean</div><div class="ats">Regular schedule</div></td><td style="color:var(--txt2)">Starwood</td><td><span class="ap phouse">Housekeeping</span></td><td><span class="ap pl">Low</span></td><td><span class="ap pdone">Completed</span></td><td style="color:var(--txt2)">Cleaning</td><td style="color:var(--txt3)">Apr 22</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="mwrap">
+  <div class="mtrack">
+    <div class="mitem"><span class="mdot"></span><b>Work Orders</b>Create, assign &amp; track</div>
+    <div class="mitem"><span class="mdot"></span><b>Live Monitoring</b>Sensors &amp; instant alerts</div>
+    <div class="mitem"><span class="mdot"></span><b>Team Scheduling</b>Synced with Gusto</div>
+    <div class="mitem"><span class="mdot"></span><b>Vendor Management</b>Contracts &amp; spend</div>
+    <div class="mitem"><span class="mdot"></span><b>Calendar</b>Events linked to work orders</div>
+    <div class="mitem"><span class="mdot"></span><b>Built-in Chat</b>Per-property channels</div>
+    <div class="mitem"><span class="mdot"></span><b>SOPs</b>Gate, cleaning &amp; inspections</div>
+    <div class="mitem"><span class="mdot"></span><b>Parts Inventory</b>Dymo label printing</div>
+    <div class="mitem"><span class="mdot"></span><b>Integrations</b>Gusto · MaintainX · Airtable</div>
+    <div class="mitem"><span class="mdot"></span><b>AI Assistant</b>Context-aware answers</div>
+    <div class="mitem"><span class="mdot"></span><b>Work Orders</b>Create, assign &amp; track</div>
+    <div class="mitem"><span class="mdot"></span><b>Live Monitoring</b>Sensors &amp; instant alerts</div>
+    <div class="mitem"><span class="mdot"></span><b>Team Scheduling</b>Synced with Gusto</div>
+    <div class="mitem"><span class="mdot"></span><b>Vendor Management</b>Contracts &amp; spend</div>
+    <div class="mitem"><span class="mdot"></span><b>Calendar</b>Events linked to work orders</div>
+    <div class="mitem"><span class="mdot"></span><b>Built-in Chat</b>Per-property channels</div>
+    <div class="mitem"><span class="mdot"></span><b>SOPs</b>Gate, cleaning &amp; inspections</div>
+    <div class="mitem"><span class="mdot"></span><b>Parts Inventory</b>Dymo label printing</div>
+    <div class="mitem"><span class="mdot"></span><b>Integrations</b>Gusto · MaintainX · Airtable</div>
+    <div class="mitem"><span class="mdot"></span><b>AI Assistant</b>Context-aware answers</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="fsec" id="features">
+  <div class="fhdr rev">
+    <span class="seye">Built for the way you work</span>
+    <div class="stitle">Every tool your operation<br>needs. <b>Nothing it doesn't.</b></div>
+    <p class="ssub">Hover each feature to see it in action inside Frame.</p>
+  </div>
+  <div class="fgrid rev d1">
+
+    <!-- WORK ORDERS -->
+    <div class="fcard">
+      <div class="fcmeta">
+        <div class="fcion">🔧</div>
+        <div class="fctitle">Work orders</div>
+        <div class="fcdesc">Create, assign and track every task across all properties. Sub-tasks, comments, on-hold workflows, duplicate detection and merge.</div>
+      </div>
+      <div class="tap-hint"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3v10M4 9l4 4 4-4"/></svg>See it in Frame <span class="tap-hint-arrow">▾</span></div></div><div class="fcprev mob-tap">
+        <div class="fcprev-glow"></div>
+        <div class="fcprev-inner">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:7px;padding:8px 10px;display:grid;grid-template-columns:22px 1fr auto auto;gap:6px;align-items:center">
+              <span style="font-size:9px;color:var(--txt3);font-family:'DM Mono',monospace">#1</span>
+              <div><div style="font-size:10px;font-weight:500;color:var(--txt)">CU-2 compressor cycling fault</div><div style="font-size:8px;color:var(--txt3)">Mitsubishi VRF · Lido</div></div>
+              <span class="ap ph">High</span><span class="ap popen">Open</span>
+            </div>
+            <div style="background:var(--or-dim);border:.5px solid var(--or-bd);border-radius:7px;padding:8px 10px;display:grid;grid-template-columns:22px 1fr auto auto;gap:6px;align-items:center">
+              <span style="font-size:9px;color:var(--txt3);font-family:'DM Mono',monospace">#8</span>
+              <div><div style="font-size:10px;font-weight:500;color:var(--txt)">Pre-arrival deep clean — Lido</div><div style="font-size:8px;color:var(--txt3)">Full property turnover</div></div>
+              <span class="ap phouse">Housekeeping</span><span class="ap popen">Open</span>
+            </div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:7px;padding:8px 10px;display:grid;grid-template-columns:22px 1fr auto auto;gap:6px;align-items:center">
+              <span style="font-size:9px;color:var(--txt3);font-family:'DM Mono',monospace">#6</span>
+              <div><div style="font-size:10px;font-weight:500;color:var(--txt)">Pool equipment inspection</div><div style="font-size:8px;color:var(--txt3)">Starwood</div></div>
+              <span class="ap pl">Low</span><span class="ap phold">On hold</span>
+            </div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:7px;padding:8px 10px;display:grid;grid-template-columns:22px 1fr auto auto;gap:6px;align-items:center">
+              <span style="font-size:9px;color:var(--txt3);font-family:'DM Mono',monospace">#9</span>
+              <div><div style="font-size:10px;font-weight:500;color:var(--txt)">Starwood weekly clean</div><div style="font-size:8px;color:var(--txt3)">Regular schedule</div></div>
+              <span class="ap pl">Low</span><span class="ap pdone">Completed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MONITORING -->
+    <div class="fcard">
+      <div class="fcmeta">
+        <div class="fcion">📡</div>
+        <div class="fctitle">Live monitoring</div>
+        <div class="fcdesc">Temperature, humidity, water leak sensors, generator status and bilge pumps — live dashboards with instant SMS and email alerts.</div>
+      </div>
+      <div class="tap-hint" onclick="this.closest('.fcard').querySelector('.fcprev').classList.toggle('mob-open');this.closest('.fcard').classList.toggle('mob-expanded')"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3v10M4 9l4 4 4-4"/></svg>See it in Frame <span class="tap-hint-arrow">▾</span></div><div class="fcprev">
+        <div class="fcprev-glow"></div>
+        <div class="fcprev-inner">
+          <div style="background:rgba(248,113,113,.06);border:.5px solid rgba(248,113,113,.25);border-radius:8px;padding:9px 11px;display:flex;gap:8px;align-items:flex-start;margin-bottom:5px">
+            <span style="font-size:14px">💧</span>
+            <div style="flex:1"><div style="font-size:10px;font-weight:500;color:var(--txt);margin-bottom:2px">Water leak — Mechanical Room A</div><div style="font-size:9px;color:var(--txt2)">Sensor 4 triggered · 2 min ago</div></div>
+            <span class="ap ph">CRITICAL</span>
+          </div>
+          <div style="background:rgba(249,115,22,.06);border:.5px solid rgba(249,115,22,.2);border-radius:8px;padding:9px 11px;display:flex;gap:8px;align-items:flex-start;margin-bottom:8px">
+            <span style="font-size:14px">🌡</span>
+            <div style="flex:1"><div style="font-size:10px;font-weight:500;color:var(--txt);margin-bottom:2px">South Garage Attic — 86.5°F</div><div style="font-size:9px;color:var(--txt2)">Setpoint 74°F · 23 hrs over threshold</div></div>
+            <span class="ap pm">WARNING</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px">
+            <div style="background:var(--bg2);border:.5px solid rgba(249,115,22,.3);border-radius:6px;padding:8px"><div style="font-size:8px;color:var(--txt3);margin-bottom:2px">MASTER BED</div><div style="font-size:18px;font-weight:400;color:var(--or)">73.5°</div><div style="font-size:8px;color:var(--txt3)">Set 70 · +3.5</div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:6px;padding:8px"><div style="font-size:8px;color:var(--txt3);margin-bottom:2px">GREAT ROOM</div><div style="font-size:18px;font-weight:400;color:var(--grn)">72.1°</div><div style="font-size:8px;color:var(--txt3)">Set 72 · +0.1</div></div>
+            <div style="background:var(--bg2);border:.5px solid rgba(248,113,113,.35);border-radius:6px;padding:8px"><div style="font-size:8px;color:var(--txt3);margin-bottom:2px">ATTIC</div><div style="font-size:18px;font-weight:400;color:var(--red)">86.5°</div><div style="font-size:8px;color:var(--txt3)">Set 74 · +12.5</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALENDAR -->
+    <div class="fcard">
+      <div class="fcmeta">
+        <div class="fcion">📅</div>
+        <div class="fctitle">Calendar</div>
+        <div class="fcdesc">Schedule PM visits, vendor appointments and inspections. Every event links directly to a work order for full traceability.</div>
+      </div>
+      <div class="tap-hint" onclick="this.closest('.fcard').querySelector('.fcprev').classList.toggle('mob-open');this.closest('.fcard').classList.toggle('mob-expanded')"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3v10M4 9l4 4 4-4"/></svg>See it in Frame <span class="tap-hint-arrow">▾</span></div><div class="fcprev">
+        <div class="fcprev-glow"></div>
+        <div class="fcprev-inner">
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;margin-bottom:2px">
+            <div style="font-size:7px;color:var(--txt3);text-align:center;padding:3px;font-weight:600;text-transform:uppercase">M</div>
+            <div style="font-size:7px;color:var(--txt3);text-align:center;padding:3px;font-weight:600;text-transform:uppercase">T</div>
+            <div style="font-size:7px;color:var(--txt3);text-align:center;padding:3px;font-weight:600;text-transform:uppercase">W</div>
+            <div style="font-size:7px;color:var(--txt3);text-align:center;padding:3px;font-weight:600;text-transform:uppercase">T</div>
+            <div style="font-size:7px;color:var(--txt3);text-align:center;padding:3px;font-weight:600;text-transform:uppercase">F</div>
+            <div style="font-size:7px;color:var(--txt3);text-align:center;padding:3px;font-weight:600;text-transform:uppercase">S</div>
+            <div style="font-size:7px;color:var(--txt3);text-align:center;padding:3px;font-weight:600;text-transform:uppercase">S</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px">
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:4px;padding:4px 5px;min-height:48px"><div style="font-size:8px;color:var(--txt3);margin-bottom:2px;font-family:'DM Mono',monospace">28</div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:4px;padding:4px 5px;min-height:48px"><div style="font-size:8px;color:var(--txt3);margin-bottom:2px;font-family:'DM Mono',monospace">29</div><div style="font-size:7px;background:rgba(249,115,22,.2);color:var(--or);padding:1px 4px;border-radius:3px;margin-bottom:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">CU-1 inspect</div><div style="font-size:7px;background:rgba(249,115,22,.2);color:var(--or);padding:1px 4px;border-radius:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">CU-2 visit</div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--or-bd);border-radius:4px;padding:4px 5px;min-height:48px"><div style="font-size:8px;color:var(--or);margin-bottom:2px;font-weight:600;font-family:'DM Mono',monospace">30</div><div style="font-size:7px;background:rgba(249,115,22,.2);color:var(--or);padding:1px 4px;border-radius:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">HVAC on-site</div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:4px;padding:4px 5px;min-height:48px"><div style="font-size:8px;color:var(--txt3);margin-bottom:2px;font-family:'DM Mono',monospace">1</div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:4px;padding:4px 5px;min-height:48px"><div style="font-size:8px;color:var(--txt3);margin-bottom:2px;font-family:'DM Mono',monospace">2</div><div style="font-size:7px;background:rgba(96,165,250,.15);color:var(--blu);padding:1px 4px;border-radius:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Gen. test</div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:4px;padding:4px 5px;min-height:48px"><div style="font-size:8px;color:var(--txt3);margin-bottom:2px;font-family:'DM Mono',monospace">3</div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:4px;padding:4px 5px;min-height:48px"><div style="font-size:8px;color:var(--txt3);margin-bottom:2px;font-family:'DM Mono',monospace">4</div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:4px;padding:4px 5px;min-height:48px"><div style="font-size:8px;color:var(--txt3);margin-bottom:2px;font-family:'DM Mono',monospace">5</div><div style="font-size:7px;background:rgba(167,139,250,.15);color:var(--pur);padding:1px 4px;border-radius:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Pool inspect</div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:4px;padding:4px 5px;min-height:48px"><div style="font-size:8px;color:var(--txt3);margin-bottom:2px;font-family:'DM Mono',monospace">6</div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:4px;padding:4px 5px;min-height:48px"><div style="font-size:8px;color:var(--txt3);margin-bottom:2px;font-family:'DM Mono',monospace">7</div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:4px;padding:4px 5px;min-height:48px"><div style="font-size:8px;color:var(--txt3);margin-bottom:2px;font-family:'DM Mono',monospace">8</div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:4px;padding:4px 5px;min-height:48px"><div style="font-size:8px;color:var(--txt3);margin-bottom:2px;font-family:'DM Mono',monospace">9</div><div style="font-size:7px;background:rgba(250,204,21,.12);color:var(--yel);padding:1px 4px;border-radius:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">T1 detail</div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:4px;padding:4px 5px;min-height:48px"><div style="font-size:8px;color:var(--txt3);margin-bottom:2px;font-family:'DM Mono',monospace">10</div><div style="font-size:7px;background:rgba(250,204,21,.12);color:var(--yel);padding:1px 4px;border-radius:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Dock lights</div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:4px;padding:4px 5px;min-height:48px"><div style="font-size:8px;color:var(--txt3);margin-bottom:2px;font-family:'DM Mono',monospace">11</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM -->
+    <div class="fcard">
+      <div class="fcmeta">
+        <div class="fcion">👥</div>
+        <div class="fctitle">Team management</div>
+        <div class="fcdesc">Staff grouped by property, work schedules synced with Gusto, and role-based permissions for every team member.</div>
+      </div>
+      <div class="tap-hint" onclick="this.closest('.fcard').querySelector('.fcprev').classList.toggle('mob-open');this.closest('.fcard').classList.toggle('mob-expanded')"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3v10M4 9l4 4 4-4"/></svg>See it in Frame <span class="tap-hint-arrow">▾</span></div><div class="fcprev">
+        <div class="fcprev-glow"></div>
+        <div class="fcprev-inner">
+          <div style="font-size:8px;color:var(--or);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;display:flex;align-items:center;gap:5px"><span style="width:5px;height:5px;border-radius:50%;background:var(--or);display:inline-block"></span>Lido</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px">
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:7px;padding:10px"><div style="width:28px;height:28px;border-radius:50%;background:var(--or);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#090908;margin-bottom:6px">AJ</div><div style="font-size:10px;font-weight:500;color:var(--txt)">Albert Day</div><div style="font-size:8px;color:var(--txt3)">Owner</div><div style="font-size:8px;color:var(--grn);margin-top:3px">● Active</div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:7px;padding:10px"><div style="width:28px;height:28px;border-radius:50%;background:var(--blu);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#090908;margin-bottom:6px">MT</div><div style="font-size:10px;font-weight:500;color:var(--txt)">Mike Torres</div><div style="font-size:8px;color:var(--txt3)">HVAC Lead</div><div style="font-size:8px;color:var(--grn);margin-top:3px">● Active</div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:7px;padding:10px"><div style="width:28px;height:28px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#090908;margin-bottom:6px">LL</div><div style="font-size:10px;font-weight:500;color:var(--txt)">Laurent L.</div><div style="font-size:8px;color:var(--txt3)">Housekeeping</div><div style="font-size:8px;color:var(--grn);margin-top:3px">● Active</div></div>
+          </div>
+          <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:7px;overflow:hidden">
+            <div style="display:grid;grid-template-columns:64px repeat(7,1fr);gap:0;background:var(--bd)">
+              <div style="background:var(--bg3);padding:4px 6px;font-size:7px;color:var(--txt3);font-weight:600">Name</div>
+              <div style="background:var(--bg3);padding:4px;text-align:center;font-size:7px;color:var(--txt3)">M</div><div style="background:var(--bg3);padding:4px;text-align:center;font-size:7px;color:var(--txt3)">T</div><div style="background:var(--bg3);padding:4px;text-align:center;font-size:7px;color:var(--txt3)">W</div><div style="background:var(--bg3);padding:4px;text-align:center;font-size:7px;color:var(--txt3)">T</div><div style="background:var(--bg3);padding:4px;text-align:center;font-size:7px;color:var(--txt3)">F</div><div style="background:var(--bg3);padding:4px;text-align:center;font-size:7px;color:var(--txt3)">S</div><div style="background:var(--bg3);padding:4px;text-align:center;font-size:7px;color:var(--txt3)">S</div>
+            </div>
+            <div style="display:grid;grid-template-columns:64px repeat(7,1fr);gap:0;border-top:.5px solid var(--bd)">
+              <div style="background:var(--bg2);padding:4px 6px;font-size:8px;color:var(--txt2);display:flex;align-items:center;gap:4px"><div style="width:14px;height:14px;border-radius:50%;background:var(--blu);display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:700;color:#090908;flex-shrink:0">MT</div>Torres</div>
+              <div style="background:var(--bg2);padding:2px;text-align:center"><span style="background:rgba(74,222,128,.1);color:var(--grn);border-radius:3px;padding:1px 2px;font-size:6px;font-weight:600;display:block">7a-3p</span></div>
+              <div style="background:var(--bg2);padding:2px;text-align:center"><span style="background:rgba(74,222,128,.1);color:var(--grn);border-radius:3px;padding:1px 2px;font-size:6px;font-weight:600;display:block">7a-3p</span></div>
+              <div style="background:var(--bg2);padding:2px;text-align:center"><span style="background:rgba(74,222,128,.1);color:var(--grn);border-radius:3px;padding:1px 2px;font-size:6px;font-weight:600;display:block">7a-3p</span></div>
+              <div style="background:var(--bg2);padding:2px;text-align:center"><span style="background:rgba(74,222,128,.1);color:var(--grn);border-radius:3px;padding:1px 2px;font-size:6px;font-weight:600;display:block">7a-3p</span></div>
+              <div style="background:var(--bg2);padding:2px;text-align:center"><span style="background:rgba(74,222,128,.1);color:var(--grn);border-radius:3px;padding:1px 2px;font-size:6px;font-weight:600;display:block">7a-3p</span></div>
+              <div style="background:var(--bg2);padding:2px;text-align:center"><span style="background:rgba(255,255,255,.04);color:var(--txt3);border-radius:3px;padding:1px 2px;font-size:6px;display:block">Off</span></div>
+              <div style="background:var(--bg2);padding:2px;text-align:center"><span style="background:rgba(255,255,255,.04);color:var(--txt3);border-radius:3px;padding:1px 2px;font-size:6px;display:block">Off</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="fcard">
+      <div class="fcmeta">
+        <div class="fcion">💬</div>
+        <div class="fctitle">Built-in chat</div>
+        <div class="fcdesc">Per-property and per-team channels. Work order links embedded in messages so context never gets lost in a group text thread.</div>
+      </div>
+      <div class="tap-hint" onclick="this.closest('.fcard').querySelector('.fcprev').classList.toggle('mob-open');this.closest('.fcard').classList.toggle('mob-expanded')"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3v10M4 9l4 4 4-4"/></svg>See it in Frame <span class="tap-hint-arrow">▾</span></div><div class="fcprev">
+        <div class="fcprev-glow"></div>
+        <div class="fcprev-inner">
+          <div style="display:grid;grid-template-columns:110px 1fr;height:100%;gap:0">
+            <div style="border-right:.5px solid var(--bd);padding:8px 6px">
+              <div style="font-size:7px;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;padding:5px 4px 2px;font-weight:600">Properties</div>
+              <div style="display:flex;align-items:center;gap:5px;padding:5px;border-radius:4px;font-size:9px;background:var(--or-dim);color:var(--or);margin-bottom:1px">🏠 Lido <span style="margin-left:auto;background:var(--or);color:#090908;font-size:7px;font-weight:700;padding:1px 4px;border-radius:6px">3</span></div>
+              <div style="display:flex;align-items:center;gap:5px;padding:5px;border-radius:4px;font-size:9px;color:var(--txt2);margin-bottom:1px">🏡 River Club</div>
+              <div style="display:flex;align-items:center;gap:5px;padding:5px;border-radius:4px;font-size:9px;color:var(--txt2);margin-bottom:1px">🏔 Starwood</div>
+              <div style="font-size:7px;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;padding:8px 4px 2px;font-weight:600">Teams</div>
+              <div style="display:flex;align-items:center;gap:5px;padding:5px;border-radius:4px;font-size:9px;color:var(--txt2);margin-bottom:1px">🔧 Maintenance <span style="margin-left:auto;background:var(--or);color:#090908;font-size:7px;font-weight:700;padding:1px 4px;border-radius:6px">2</span></div>
+              <div style="display:flex;align-items:center;gap:5px;padding:5px;border-radius:4px;font-size:9px;color:var(--txt2)">🧹 Housekeeping</div>
+            </div>
+            <div style="padding:8px;display:flex;flex-direction:column;gap:8px;overflow:hidden">
+              <div style="display:flex;gap:6px"><div style="width:20px;height:20px;border-radius:50%;background:var(--blu);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#090908;flex-shrink:0">MT</div><div><div style="font-size:7px;color:var(--txt3);margin-bottom:2px">Mike Torres · 8:47 AM</div><div style="background:var(--bg3);border-radius:5px;padding:6px 8px;font-size:9px;color:var(--txt2);line-height:1.5">Pulling the CU-2 error log now.<div style="background:var(--bg4);border:.5px solid var(--bd2);border-radius:4px;padding:4px 6px;margin-top:4px;display:flex;align-items:center;justify-content:space-between"><span style="font-size:8px;color:var(--txt2)">#1 CU-2 compressor fault</span><span class="ap popen" style="font-size:7px">Open</span></div></div></div></div>
+              <div style="display:flex;gap:6px"><div style="width:20px;height:20px;border-radius:50%;background:var(--or);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#090908;flex-shrink:0">AJ</div><div><div style="font-size:7px;color:var(--txt3);margin-bottom:2px">Albert Day · 8:50 AM</div><div style="background:var(--or);border-radius:5px;padding:6px 8px;font-size:9px;color:#090908;line-height:1.5">CU-2 is the priority. Owner arrives Friday.</div></div></div>
+              <div style="display:flex;gap:6px"><div style="width:20px;height:20px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#090908;flex-shrink:0">LL</div><div><div style="font-size:7px;color:var(--txt3);margin-bottom:2px">Laurent · 9:15 AM</div><div style="background:var(--bg3);border-radius:5px;padding:6px 8px;font-size:9px;color:var(--txt2);line-height:1.5">Pre-arrival clean done. All rooms ready ✓</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTEGRATIONS -->
+    <div class="fcard">
+      <div class="fcmeta">
+        <div class="fcion">🔌</div>
+        <div class="fctitle">Integrations</div>
+        <div class="fcdesc">Connects to Gusto, MaintainX, Airtable, Mitsubishi kumo cloud, Monnit sensors, Nest, Dymo label printers, and more.</div>
+      </div>
+      <div class="tap-hint" onclick="this.closest('.fcard').querySelector('.fcprev').classList.toggle('mob-open');this.closest('.fcard').classList.toggle('mob-expanded')"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3v10M4 9l4 4 4-4"/></svg>See it in Frame <span class="tap-hint-arrow">▾</span></div><div class="fcprev">
+        <div class="fcprev-glow"></div>
+        <div class="fcprev-inner">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:7px;padding:9px 10px;display:flex;align-items:center;gap:7px"><span style="font-size:15px">💼</span><div><div style="font-size:10px;font-weight:500;color:var(--txt)">Gusto</div><div style="font-size:8px;color:var(--grn)">● Connected</div></div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:7px;padding:9px 10px;display:flex;align-items:center;gap:7px"><span style="font-size:15px">🔧</span><div><div style="font-size:10px;font-weight:500;color:var(--txt)">MaintainX</div><div style="font-size:8px;color:var(--grn)">● Connected</div></div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:7px;padding:9px 10px;display:flex;align-items:center;gap:7px"><span style="font-size:15px">📊</span><div><div style="font-size:10px;font-weight:500;color:var(--txt)">Airtable</div><div style="font-size:8px;color:var(--grn)">● Connected</div></div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:7px;padding:9px 10px;display:flex;align-items:center;gap:7px"><span style="font-size:15px">🖨</span><div><div style="font-size:10px;font-weight:500;color:var(--txt)">Dymo</div><div style="font-size:8px;color:var(--grn)">● Connected</div></div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:7px;padding:9px 10px;display:flex;align-items:center;gap:7px"><span style="font-size:15px">❄️</span><div><div style="font-size:10px;font-weight:500;color:var(--txt)">kumo cloud</div><div style="font-size:8px;color:var(--txt3)">Available</div></div></div>
+            <div style="background:var(--bg2);border:.5px solid var(--bd);border-radius:7px;padding:9px 10px;display:flex;align-items:center;gap:7px"><span style="font-size:15px">📡</span><div><div style="font-size:10px;font-weight:500;color:var(--txt)">Monnit</div><div style="font-size:8px;color:var(--txt3)">Available</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div style="max-width:1040px;margin:0 auto">
+    <div style="text-align:center" class="rev">
+      <span class="seye">Simple by design</span>
+      <div class="stitle">Up and running<br>in <b>minutes</b></div>
+    </div>
+    <div class="hsteps rev d1">
+      <div class="hstep"><div class="hnum">01</div><div class="htitle">Add your properties</div><div class="hdesc">Connect your locations, upload photos, and configure your sensor integrations. Takes about 10 minutes per property to get fully set up.</div></div>
+      <div class="hstep"><div class="hnum">02</div><div class="htitle">Invite your team</div><div class="hdesc">Add staff with role-based permissions. Technicians, housekeeping, vendors, and managers each see exactly what they need.</div></div>
+      <div class="hstep"><div class="hnum">03</div><div class="htitle">Run your operations</div><div class="hdesc">Create work orders, monitor live alerts, schedule PMs, and communicate — all without switching between five different tools.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="psec" id="pricing">
+  <div class="pinner">
+    <div class="rev">
+      <span class="seye">Simple pricing</span>
+      <div class="stitle">One price.<br><b>Everything included.</b></div>
+      <p style="font-size:16px;color:var(--txt2);font-weight:300;max-width:420px;margin:0 auto;line-height:1.65">No feature tiers, no hidden add-ons. Every seat gets the full platform.</p>
+    </div>
+    <div class="pcards rev d1">
+      <div class="pcard hot">
+        <div class="ptag tpro">✦ Pro</div>
+        <div class="pname">Per user</div>
+        <div class="pprice"><sup>$</sup>30<span>/mo</span></div>
+        <div class="pper">per user · billed monthly · 14-day free trial</div>
+        <ul class="plist">
+          <li><div class="pck pckor">✓</div>Unlimited properties</li>
+          <li><div class="pck pckor">✓</div>Work orders, sub-tasks &amp; comments</li>
+          <li><div class="pck pckor">✓</div>Live monitoring dashboard</li>
+          <li><div class="pck pckor">✓</div>Team scheduling &amp; built-in chat</li>
+          <li><div class="pck pckor">✓</div>Calendar &amp; vendor management</li>
+          <li><div class="pck pckor">✓</div>SOPs, parts inventory &amp; label printing</li>
+          <li><div class="pck pckor">✓</div>All integrations included</li>
+          <li><div class="pck pckor">✓</div>Email &amp; SMS alerts</li>
+        </ul>
+        <button class="pbtn pbtor" onclick="openM()">Start free trial</button>
+      </div>
+      <div class="pcard">
+        <div class="ptag tent">Enterprise</div>
+        <div class="pname">Custom</div>
+        <div class="pprice" style="font-size:40px;padding-top:10px">Let's talk</div>
+        <div class="pper">volume pricing · dedicated support · custom setup</div>
+        <ul class="plist">
+          <li><div class="pck pckbl">✓</div>Everything in Pro</li>
+          <li><div class="pck pckbl">✓</div>Volume user pricing</li>
+          <li><div class="pck pckbl">✓</div>Dedicated onboarding specialist</li>
+          <li><div class="pck pckbl">✓</div>Custom integrations &amp; API access</li>
+          <li><div class="pck pckbl">✓</div>SLA &amp; priority support</li>
+          <li><div class="pck pckbl">✓</div>White-label options</li>
+          <li><div class="pck pckbl">✓</div>SSO / SAML</li>
+          <li><div class="pck pckbl">✓</div>Quarterly business reviews</li>
+        </ul>
+        <button class="pbtn pbtgh" onclick="openM()">Contact us</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="ctasec">
+  <div class="rev">
+    <h2>Ready to run a tighter<br><b>operation?</b></h2>
+    <p>Join property managers who've moved from spreadsheets and group chats to Frame.</p>
+    <button class="bpri" onclick="openM()">Get started free <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="nlogo">
+    <div class="lm" style="width:24px;height:24px;padding:4px;border-radius:5px"><s></s><s></s><s></s><s></s></div>
+    <span class="ln">Frame</span>
+  </div>
+  <div class="fcopy">© 2026 Frame Operations. All rights reserved.</div>
+  <div class="flinks">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#" onclick="openM();return false">Contact</a>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="mbg" id="modal" onclick="if(event.target===this)closeM()">
+  <div class="mbox">
+    <button class="mcls" onclick="closeM()">×</button>
+    <div class="mtitle">Get in touch</div>
+    <div class="msub">Tell us about your properties and team. We'll reach out within one business day.</div>
+    <div class="frow" style="margin-bottom:14px">
+      <div><label class="flbl">First name</label><input class="finp" style="margin-bottom:0" placeholder="Albert"></div>
+      <div><label class="flbl">Last name</label><input class="finp" style="margin-bottom:0" placeholder="Day"></div>
+    </div>
+    <label class="flbl">Work email</label>
+    <input class="finp" type="email" placeholder="you@company.com">
+    <label class="flbl">Company / Portfolio</label>
+    <input class="finp" placeholder="Day Property Group">
+    <label class="flbl">Number of properties</label>
+    <select class="finp" style="appearance:none;cursor:pointer">
+      <option>1–3 properties</option>
+      <option>4–10 properties</option>
+      <option>10–25 properties</option>
+      <option>25+ properties</option>
+    </select>
+    <button class="pbtn pbtor" id="sbtn" style="margin-top:8px" onclick="submit()">Send request →</button>
+  </div>
+</div>
+
+<script>
+
+
+// FEATURE CARD RADIAL GLOW follow mouse
+document.querySelectorAll('.fcard').forEach(function(card){
+  card.addEventListener('mousemove',function(e){
+    var r=card.getBoundingClientRect();
+    var x=((e.clientX-r.left)/r.width*100).toFixed(1);
+    var y=((e.clientY-r.top)/r.height*100).toFixed(1);
+    card.style.setProperty('--mx',x+'%');
+    card.style.setProperty('--my',y+'%');
+  });
+});
+
+// SCROLL REVEAL
+var obs=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('in');});},{threshold:.07});
+document.querySelectorAll('.rev').forEach(function(el){obs.observe(el);});
+setTimeout(function(){
+  var heroEls=document.querySelectorAll('.hcon .rev');
+  heroEls.forEach(function(el,i){setTimeout(function(){el.classList.add('in');},80+i*130);});
+},60);
+
+// MOBILE NAV
+function toggleMenu(){
+  var h=document.getElementById('ham'),m=document.getElementById('mob-menu');
+  h.classList.toggle('open');m.classList.toggle('open');
+}
+function closeMenu(){
+  document.getElementById('ham').classList.remove('open');
+  document.getElementById('mob-menu').classList.remove('open');
+}
+// Close menu on outside click
+document.addEventListener('click',function(e){
+  var h=document.getElementById('ham'),m=document.getElementById('mob-menu');
+  if(m&&m.classList.contains('open')&&!m.contains(e.target)&&!h.contains(e.target))closeMenu();
+});
+
+// MODAL
+function openM(){document.getElementById('modal').classList.add('open');}
+function closeM(){document.getElementById('modal').classList.remove('open');}
+function submit(){
+  var btn=document.getElementById('sbtn');
+  btn.textContent='Request sent ✓';
+  btn.style.background='#4ADE80';btn.style.color='#090908';
+  setTimeout(function(){closeM();setTimeout(function(){btn.textContent='Send request →';btn.style.background='';btn.style.color='';},400);},1500);
+}
+
+// MARQUEE pause on hover
+var mt=document.querySelector('.mtrack');
+if(mt){
+  mt.parentElement.addEventListener('mouseenter',function(){mt.style.animationPlayState='paused';});
+  mt.parentElement.addEventListener('mouseleave',function(){mt.style.animationPlayState='running';});
+}
+</script>
+</body>
+</html>
